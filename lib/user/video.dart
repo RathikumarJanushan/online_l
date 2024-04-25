@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class VideoPlayerApp extends StatelessWidget {
   const VideoPlayerApp({Key? key});
@@ -29,18 +30,20 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
   @override
   void initState() {
     super.initState();
+    _initializeControllers();
+  }
 
-    _controllers = [
-      VideoPlayerController.network(
-        'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4',
-      ),
-      VideoPlayerController.network(
-        'https://drive.google.com/uc?export=download&id=1ZihmdkV6DDbnsvgpzGekPt1-BdQs8kad',
-      ),
-    ];
+  void _initializeControllers() async {
+    final snapshot = await FirebaseFirestore.instance.collection('videos').get();
+    final videoUrls = snapshot.docs.map((doc) => doc['videoUrl'] as String).toList();
+    
+    _controllers = videoUrls.map((url) => VideoPlayerController.network(url)).toList();
 
     _initializeVideoPlayerFutures = List.generate(
-        _controllers.length, (index) => _controllers[index].initialize());
+      _controllers.length,
+      (index) => _controllers[index].initialize(),
+    );
+    setState(() {}); // Trigger rebuild after initializing controllers
   }
 
   @override
@@ -75,45 +78,53 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
       appBar: AppBar(
         title: const Text('Video Player Demo'),
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          FutureBuilder(
-            future: _initializeVideoPlayerFutures[_currentIndex],
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.done) {
-                return AspectRatio(
-                  aspectRatio: _controllers[_currentIndex].value.aspectRatio,
-                  child: VideoPlayer(_controllers[_currentIndex]),
-                );
-              } else {
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
-              }
-            },
-          ),
-          SizedBox(height: 20),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              FloatingActionButton(
-                onPressed: _togglePlayPause,
-                child: Icon(
-                  _controllers[_currentIndex].value.isPlaying
-                      ? Icons.pause
-                      : Icons.play_arrow,
+      body: _controllers.isEmpty
+          ? const Center(
+              child: CircularProgressIndicator(),
+            )
+          : Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                FutureBuilder(
+                  future: _initializeVideoPlayerFutures[_currentIndex],
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.done) {
+                      return AspectRatio(
+                        aspectRatio: _controllers[_currentIndex].value.aspectRatio,
+                        child: VideoPlayer(_controllers[_currentIndex]),
+                      );
+                    } else {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+                  },
                 ),
-              ),
-              SizedBox(width: 20),
-              FloatingActionButton(
-                onPressed: _playNextVideo,
-                child: Icon(Icons.skip_next),
-              ),
-            ],
-          ),
-        ],
-      ),
+                SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    FloatingActionButton(
+                      onPressed: _togglePlayPause,
+                      child: Icon(
+                        _controllers[_currentIndex].value.isPlaying
+                            ? Icons.pause
+                            : Icons.play_arrow,
+                      ),
+                    ),
+                    SizedBox(width: 20),
+                    FloatingActionButton(
+                      onPressed: _playNextVideo,
+                      child: Icon(Icons.skip_next),
+                    ),
+                  ],
+                ),
+              ],
+            ),
     );
   }
+}
+
+void main() {
+  runApp(VideoPlayerApp());
 }
