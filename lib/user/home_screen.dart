@@ -2,11 +2,14 @@ import 'package:online_learning/auth/auth_service.dart';
 import 'package:online_learning/auth/login_screen.dart';
 import 'package:online_learning/widgets/button.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:online_learning/user/learning_material.dart';
+import 'package:online_learning/user/report.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     final AuthService auth = AuthService();
@@ -32,19 +35,26 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
             ListTile(
-              title: Text('learning material'),
+              title: Text('Learning Material'),
               onTap: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) =>
-                          LearningMaterialPage()), // Navigate to AssignmentScreen
+                    builder: (context) => LearningMaterialPage(),
+                  ),
                 );
               },
             ),
             ListTile(
-              title: Text('report'),
-              onTap: () {},
+              title: Text('Report'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => Marks(),
+                  ),
+                );
+              },
             ),
           ],
         ),
@@ -52,8 +62,7 @@ class HomeScreen extends StatelessWidget {
       body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage(
-                "assets/PMSbackground.png"), // Background image asset path
+            image: AssetImage("assets/PMSbackground.png"),
             fit: BoxFit.cover,
           ),
         ),
@@ -62,18 +71,20 @@ class HomeScreen extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Text(
-                "Welcome User",
+              Text(
+                "Welcome ${FirebaseAuth.instance.currentUser?.email ?? 'User'}", // Display user's email or 'User' if email is null
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.w400),
               ),
-              const SizedBox(height: 20),
+              SizedBox(height: 20),
               CustomButton(
                 label: "Sign Out",
                 onPressed: () async {
                   await auth.signout();
                   Navigator.pushReplacement(
                     context,
-                    MaterialPageRoute(builder: (context) => LoginScreen()),
+                    MaterialPageRoute(
+                      builder: (context) => LoginScreen(),
+                    ),
                   );
                 },
               ),

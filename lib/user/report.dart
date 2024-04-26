@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
-class MarksList extends StatelessWidget {
+class Marks extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -9,7 +10,10 @@ class MarksList extends StatelessWidget {
         title: Text('Marks List'),
       ),
       body: StreamBuilder(
-        stream: FirebaseFirestore.instance.collection('Report').snapshots(),
+        stream: FirebaseFirestore.instance
+            .collection('Report')
+            .where('name', isEqualTo: FirebaseAuth.instance.currentUser?.email)
+            .snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return CircularProgressIndicator();
@@ -17,9 +21,9 @@ class MarksList extends StatelessWidget {
             return ListView.builder(
               itemCount: snapshot.data?.docs.length,
               itemBuilder: (context, index) {
-                DocumentSnapshot document = snapshot.data!.docs[index];
-                Map<String, dynamic> data = document.data() as Map<String, dynamic>;
-                String name = data['name'] ?? 'Unknown'; // Handle null name field/ Get the name from the document
+                DocumentSnapshot marks = snapshot.data!.docs[index];
+                Map<String, dynamic> data = marks.data() as Map<String, dynamic>;
+                String name = data['name'] ?? 'Unknown'; // Handle null name field
                 int assessment1 = data['Assessment1'] ?? 0;
                 int assessment2 = data['Assessment2'] ?? 0;
                 int assessment3 = data['Assessment3'] ?? 0;
@@ -72,6 +76,6 @@ class MarksList extends StatelessWidget {
 
 void main() {
   runApp(MaterialApp(
-    home: MarksList(),
+    home: Marks(),
   ));
 }

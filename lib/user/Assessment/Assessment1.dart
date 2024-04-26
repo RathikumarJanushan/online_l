@@ -38,8 +38,7 @@ class _assessmentScreen1State extends State<assessmentScreen1> {
       return; // Answer already selected
     }
 
-    int assessmentMarks =
-        0; // Initialize assessmentMarks outside the conditional statement
+    int assessmentMarks = 0;
 
     setState(() {
       _selectedOptions[questionIndex] = optionIndex;
@@ -67,18 +66,18 @@ class _assessmentScreen1State extends State<assessmentScreen1> {
       );
     }
 
-    assessmentMarks = _correctAnswersCount +=
-        1; // Calculate assessmentMarks based on correct answers count
+    assessmentMarks = _correctAnswersCount;
 
-    // Get the current user's ID
+    // Get the current user's ID and email
     String userId = FirebaseAuth.instance.currentUser!.uid;
+    String userName = FirebaseAuth.instance.currentUser!.email ?? FirebaseAuth.instance.currentUser!.displayName!;
 
     // Perform the Firestore transaction
-    await _updateAssessmentMarks(userId, assessmentMarks);
+    await _updateAssessmentMarks(userId, userName, assessmentMarks);
   }
 
   Future<void> _updateAssessmentMarks(
-      String userId, int assessmentMarks) async {
+      String userId, String userName, int assessmentMarks) async {
     // Get the Firestore instance
     final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
@@ -91,7 +90,7 @@ class _assessmentScreen1State extends State<assessmentScreen1> {
 
       if (!doc.exists) {
         // If the document doesn't exist, create it with Assessment1 only
-        transaction.set(docRef, {'Assessment1': assessmentMarks});
+        transaction.set(docRef, {'Assessment1': assessmentMarks, 'name': userName});
       } else {
         // If the document exists, update Assessment1 only
         final currentData = doc.data()!;
@@ -109,10 +108,12 @@ class _assessmentScreen1State extends State<assessmentScreen1> {
           'game1': game1,
           'game2': game2,
           'game3': game3,
+          'name': userName,
         });
       }
     });
   }
+
 
   @override
   Widget build(BuildContext context) {
