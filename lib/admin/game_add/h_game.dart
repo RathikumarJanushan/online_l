@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:online_learning/admin/game_add/T_o_F.dart';
 import 'package:online_learning/admin/game_add/add_game.dart';
-import 'package:online_learning/admin/game_add/count_game.dart';
 import 'package:online_learning/admin/game_add/count_game.dart';
 
 class game extends StatelessWidget {
@@ -55,10 +55,10 @@ class game extends StatelessWidget {
                 // Navigate to game page
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => AddGame()),
+                  MaterialPageRoute(builder: (context) => ImageUploadScreen2()),
                 );
               },
-              child: Text('game3'),
+              child: Text('T or F'),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Color.fromARGB(255, 2, 250, 212),
                 padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
@@ -69,20 +69,6 @@ class game extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class TrainingVideoPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Training Video'),
-      ),
-      body: Center(
-        child: Text('This is the Training Video page'),
       ),
     );
   }

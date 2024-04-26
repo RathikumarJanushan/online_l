@@ -67,8 +67,8 @@ class _assessmentScreen3State extends State<assessmentScreen3> {
       );
     }
 
-    assessmentMarks = _correctAnswersCount *
-        2; // Calculate assessmentMarks based on correct answers count
+    assessmentMarks = _correctAnswersCount +=
+        1; // Calculate assessmentMarks based on correct answers count
 
     // Get the current user's ID
     String userId = FirebaseAuth.instance.currentUser!.uid;
@@ -97,12 +97,18 @@ class _assessmentScreen3State extends State<assessmentScreen3> {
         final currentData = doc.data()!;
         final currentAssessment2 = currentData['Assessment2'] ?? 0;
         final currentAssessment3 = currentData['Assessment1'] ?? 0;
+        final game1 = currentData['game1'] ?? 0;
+        final game2 = currentData['game2'] ?? 0;
+        final game3 = currentData['game3'] ?? 0;
 
         // Update the document with Assessment1 and leave Assessment2 and Assessment3 unchanged
         transaction.update(docRef, {
           'Assessment3': assessmentMarks,
           'Assessment2': currentAssessment2,
           'Assessment1': currentAssessment3,
+          'game1': game1,
+          'game2': game2,
+          'game3': game3,
         });
       }
     });

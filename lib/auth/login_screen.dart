@@ -100,27 +100,26 @@ class _LoginScreenState extends State<LoginScreen> {
         context,
         MaterialPageRoute(builder: (context) => const AdminhomeomeScreen()),
       );
-_login() async {
-  print("Attempting login with email: ${_email.text}");
-  final user = await _auth.loginUserWithEmailAndPassword(_email.text, _password.text);
+  _login() async {
+    print("Attempting login with email: ${_email.text}");
+    final user =
+        await _auth.loginUserWithEmailAndPassword(_email.text, _password.text);
 
-  if (user != null) {
-    log("User Logged In: ${user.uid}");
+    if (user != null) {
+      log("User Logged In: ${user.uid}");
 
-    // Check if the user's email is admin@gmail.com
-    if (_email.text == "admin@gmail.com") {
-      print("Admin logged in");
-      // Navigate to the admin home screen
-      goToAdminHome(context);
+      // Check if the user's email is admin@gmail.com
+      if (_email.text == "admin@gmail.com") {
+        print("Admin logged in");
+        // Navigate to the admin home screen
+        goToAdminHome(context);
+      } else {
+        print("Regular user logged in");
+        // Navigate to the regular home screen
+        goToHome(context);
+      }
     } else {
-      print("Regular user logged in");
-      // Navigate to the regular home screen
-      goToHome(context);
+      print("Login failed");
     }
-  } else {
-    print("Login failed");
   }
-}
-
- 
 }

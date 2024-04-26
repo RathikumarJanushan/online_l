@@ -34,10 +34,13 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
   }
 
   void _initializeControllers() async {
-    final snapshot = await FirebaseFirestore.instance.collection('videos').get();
-    final videoUrls = snapshot.docs.map((doc) => doc['videoUrl'] as String).toList();
-    
-    _controllers = videoUrls.map((url) => VideoPlayerController.network(url)).toList();
+    final snapshot =
+        await FirebaseFirestore.instance.collection('videos').get();
+    final videoUrls =
+        snapshot.docs.map((doc) => doc['videoUrl'] as String).toList();
+
+    _controllers =
+        videoUrls.map((url) => VideoPlayerController.network(url)).toList();
 
     _initializeVideoPlayerFutures = List.generate(
       _controllers.length,
@@ -90,7 +93,8 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.done) {
                       return AspectRatio(
-                        aspectRatio: _controllers[_currentIndex].value.aspectRatio,
+                        aspectRatio:
+                            _controllers[_currentIndex].value.aspectRatio,
                         child: VideoPlayer(_controllers[_currentIndex]),
                       );
                     } else {

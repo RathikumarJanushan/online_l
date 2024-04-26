@@ -1,21 +1,21 @@
-import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class Game extends StatefulWidget {
+class ImageQuestionScreen2 extends StatefulWidget {
   @override
-  _GameState createState() => _GameState();
+  _ImageQuestionScreen2State createState() => _ImageQuestionScreen2State();
 }
 
-class _GameState extends State<Game> {
+class _ImageQuestionScreen2State extends State<ImageQuestionScreen2> {
   FirebaseFirestore _firestore = FirebaseFirestore.instance;
   List<Map<String, dynamic>> _images = [];
-  int _correctAnswersCount = 0;
+  int _correctScoreCount = 0;
   late List<int?> _selectedOptions;
 
   int _currentQuestionIndex = 0;
 
-  _GameState() {
+  _ImageQuestionScreen2State() {
     _selectedOptions = [];
   }
 
@@ -27,15 +27,16 @@ class _GameState extends State<Game> {
 
   void _fetchImages() async {
     QuerySnapshot<Map<String, dynamic>> querySnapshot =
-        await _firestore.collection('images').get();
+        await _firestore.collection('ToFGame').get();
     setState(() {
       _images = querySnapshot.docs.map((doc) => doc.data()).toList();
+      _images.shuffle(); // Shuffle questions for random order
       _selectedOptions = List.generate(_images.length, (_) => null);
     });
   }
 
   void _submitAnswer(
-      int optionIndex, String correctOption, BuildContext context) async {
+      int optionIndex, bool correctOption, BuildContext context) async {
     if (_selectedOptions[_currentQuestionIndex] != null) {
       return; // Answer already selected
     }
@@ -44,18 +45,14 @@ class _GameState extends State<Game> {
       _selectedOptions[_currentQuestionIndex] = optionIndex;
     });
 
-    if (optionIndex ==
-        _images[_currentQuestionIndex]['options'].indexOf(correctOption)) {
+    if (optionIndex == (correctOption ? 0 : 1)) {
       setState(() {
-        _correctAnswersCount += 5; // Increase score by 5 for correct answer
+        _correctScoreCount += 5;
       });
-
-      // Get the current user's ID
       String userId = FirebaseAuth.instance.currentUser!.uid;
 
       // Perform the Firestore transaction
-      await _updateAssessmentMarks(userId, _correctAnswersCount);
-
+      await _updateAssessmentMarks(userId, _correctScoreCount);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Correct!'),
@@ -73,7 +70,7 @@ class _GameState extends State<Game> {
   }
 
   Future<void> _updateAssessmentMarks(
-      String userId, int _correctAnswersCount) async {
+      String userId, int _correctScoreCount) async {
     // Get the Firestore instance
     final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
@@ -86,7 +83,7 @@ class _GameState extends State<Game> {
 
       if (!doc.exists) {
         // If the document doesn't exist, create it with Assessment1 only
-        transaction.set(docRef, {'game1': _correctAnswersCount});
+        transaction.set(docRef, {'game3': _correctScoreCount});
       } else {
         // If the document exists, update Assessment1 only
         final currentData = doc.data()!;
@@ -95,16 +92,16 @@ class _GameState extends State<Game> {
         final currentAssessment3 = currentData['Assessment3'] ?? 0;
 
         final game2 = currentData['game2'] ?? 0;
-        final game3 = currentData['game3'] ?? 0;
+        final game1 = currentData['game1'] ?? 0;
 
         // Update the document with Assessment1 and leave Assessment2 and Assessment3 unchanged
         transaction.update(docRef, {
           'Assessment1': currentAssessment1,
           'Assessment2': currentAssessment2,
           'Assessment3': currentAssessment3,
-          'game1': _correctAnswersCount,
+          'game3': _correctScoreCount,
           'game2': game2,
-          'game3': game3,
+          'game1': game1,
         });
       }
     });
@@ -114,6 +111,10 @@ class _GameState extends State<Game> {
     setState(() {
       if (_currentQuestionIndex < _images.length - 1) {
         _currentQuestionIndex++;
+      } else {
+        // If all questions have been asked, shuffle questions for next round
+        _images.shuffle();
+        _currentQuestionIndex = 0;
       }
     });
   }
@@ -122,7 +123,7 @@ class _GameState extends State<Game> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('game'),
+        title: Text('ImageQuestionScreen2'),
       ),
       body: Padding(
         padding: EdgeInsets.all(16.0),
@@ -134,9 +135,11 @@ class _GameState extends State<Game> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Text(
-                    'Leval ${_currentQuestionIndex + 1}',
-                    style:
-                        TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
+                    _images[_currentQuestionIndex]['question'],
+                    style: TextStyle(
+                      fontSize: 24.0,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   SizedBox(height: 16.0),
                   Card(
@@ -156,37 +159,49 @@ class _GameState extends State<Game> {
                             ),
                           ),
                           SizedBox(height: 16.0),
-                          ...List.generate(
-                            _images[_currentQuestionIndex]['options'].length,
-                            (optionIndex) {
-                              String option = _images[_currentQuestionIndex]
-                                  ['options'][optionIndex];
-                              String correctOption =
-                                  _images[_currentQuestionIndex]
-                                      ['correctOption'];
-                              bool isCorrect = option == correctOption;
-                              return ElevatedButton(
-                                onPressed: () {
-                                  _submitAnswer(
-                                      optionIndex, correctOption, context);
-                                },
-                                style: ButtonStyle(
-                                  backgroundColor:
-                                      _selectedOptions[_currentQuestionIndex] !=
-                                                  null &&
-                                              optionIndex ==
-                                                  _selectedOptions[
-                                                      _currentQuestionIndex]
-                                          ? (isCorrect
-                                              ? MaterialStateProperty.all(
-                                                  Colors.green)
-                                              : MaterialStateProperty.all(
-                                                  Colors.red))
-                                          : null,
-                                ),
-                                child: Text(option),
-                              );
+                          ElevatedButton(
+                            onPressed: () {
+                              _submitAnswer(
+                                  0,
+                                  _images[_currentQuestionIndex]['selection'],
+                                  context);
                             },
+                            style: ButtonStyle(
+                              backgroundColor: _selectedOptions[
+                                              _currentQuestionIndex] !=
+                                          null &&
+                                      0 ==
+                                          _selectedOptions[
+                                              _currentQuestionIndex]
+                                  ? (_images[_currentQuestionIndex]['selection']
+                                      ? MaterialStateProperty.all(Colors.green)
+                                      : MaterialStateProperty.all(Colors.red))
+                                  : null,
+                            ),
+                            child: Text('True'),
+                          ),
+                          SizedBox(height: 16.0),
+                          ElevatedButton(
+                            onPressed: () {
+                              _submitAnswer(
+                                  1,
+                                  !_images[_currentQuestionIndex]['selection'],
+                                  context);
+                            },
+                            style: ButtonStyle(
+                              backgroundColor: _selectedOptions[
+                                              _currentQuestionIndex] !=
+                                          null &&
+                                      1 ==
+                                          _selectedOptions[
+                                              _currentQuestionIndex]
+                                  ? (!_images[_currentQuestionIndex]
+                                          ['selection']
+                                      ? MaterialStateProperty.all(Colors.green)
+                                      : MaterialStateProperty.all(Colors.red))
+                                  : null,
+                            ),
+                            child: Text('False'),
                           ),
                         ],
                       ),
@@ -201,7 +216,7 @@ class _GameState extends State<Game> {
               ),
             SizedBox(height: 16.0),
             Text(
-              'Score: $_correctAnswersCount',
+              'Correct Answers: $_correctScoreCount',
               style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
             ),
           ],

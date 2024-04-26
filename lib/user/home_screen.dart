@@ -7,7 +7,6 @@ import 'package:online_learning/user/learning_material.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
-
   @override
   Widget build(BuildContext context) {
     final AuthService auth = AuthService();
@@ -50,27 +49,36 @@ class HomeScreen extends StatelessWidget {
           ],
         ),
       ),
-      body: Align(
-        alignment: Alignment.center,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text(
-              "Welcome User",
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w400),
-            ),
-            const SizedBox(height: 20),
-            CustomButton(
-              label: "Sign Out",
-              onPressed: () async {
-                await auth.signout();
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => LoginScreen()),
-                );
-              },
-            ),
-          ],
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage(
+                "assets/PMSbackground.png"), // Background image asset path
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: Align(
+          alignment: Alignment.center,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text(
+                "Welcome User",
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w400),
+              ),
+              const SizedBox(height: 20),
+              CustomButton(
+                label: "Sign Out",
+                onPressed: () async {
+                  await auth.signout();
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => LoginScreen()),
+                  );
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );

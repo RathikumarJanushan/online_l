@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:online_learning/admin/report.dart';
 import 'package:online_learning/admin/user_screen.dart';
 import 'package:online_learning/auth/auth_service.dart';
 import 'package:online_learning/auth/login_screen.dart';
@@ -33,30 +34,33 @@ class AdminhomeomeScreen extends StatelessWidget {
                 ),
               ),
             ),
-          ListTile(
-  title: Text('User Details'),
-  onTap: () {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => UsersScreen()),
-    );
-  },
-),
-
+            ListTile(
+              title: Text('User Details'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => UsersScreen()),
+                );
+              },
+            ),
             ListTile(
               title: Text('Learning Material'),
               onTap: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) =>
-                          LearningMaterialPage()), // Navigate to AddAssignment screen
+                      builder: (context) => LearningMaterialPage()),
                 );
               },
             ),
             ListTile(
               title: Text('View Report'),
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => MarksList()),
+                );
+              },
             ),
             ListTile(
               title: Text('Sign Out'),
@@ -71,27 +75,36 @@ class AdminhomeomeScreen extends StatelessWidget {
           ],
         ),
       ),
-      body: Align(
-        alignment: Alignment.center,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text(
-              "Welcome Admin",
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w400),
-            ),
-            const SizedBox(height: 20),
-            CustomButton(
-              label: "Sign Out",
-              onPressed: () async {
-                await auth.signout();
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => LoginScreen()),
-                );
-              },
-            ),
-          ],
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage(
+                "assets/PMSbackground.png"), // Background image asset path
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: Align(
+          alignment: Alignment.center,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text(
+                "Welcome Admin",
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w400),
+              ),
+              const SizedBox(height: 20),
+              CustomButton(
+                label: "Sign Out",
+                onPressed: () async {
+                  await auth.signout();
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => LoginScreen()),
+                  );
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );
