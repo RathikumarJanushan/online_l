@@ -22,6 +22,12 @@ class QuizScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Quiz'),
+          leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: _firestore.collection('questions').snapshots(),

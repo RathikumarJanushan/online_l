@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:online_learning/admin/game/ass_delete/del_game.dart';
 import 'package:online_learning/admin/game_add/h_game.dart';
 import 'package:online_learning/admin/ass_delete/del_ass.dart';
 
@@ -36,7 +37,7 @@ class g_add_del extends StatelessWidget {
                 // Navigate to Game Hub page
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => Assessment_de()),
+                  MaterialPageRoute(builder: (context) => game_de()),
                 );
               },
               child: Text('view & Delete'),

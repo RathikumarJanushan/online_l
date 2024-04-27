@@ -22,6 +22,12 @@ class QuizScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Quiz'),
+          leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: _firestore.collection('questions2').snapshots(),
@@ -52,7 +58,7 @@ class QuizScreen extends StatelessWidget {
                   icon: Icon(Icons.delete),
                   onPressed: () async {
                     await _firestore
-                        .collection('questions')
+                        .collection('questions2')
                         .doc(questions[index].id)
                         .delete();
                   },

@@ -10,11 +10,11 @@ class UsersScreen extends StatelessWidget {
       // Delete the user document from the Firestore collection
       await FirebaseFirestore.instance.collection('usersdetails').doc(userId).delete();
 
-      // Delete the user from Firebase Authentication
-      await FirebaseAuth.instance.currentUser?.delete();
+    //       final userToDelete = await FirebaseAuth.instance.getUserByEmail(email);
+    // if (userToDelete != null) {
+    //   await userToDelete.delete();
+    // }
 
-      // If you have the user's email, you can also delete them using email
-      // await FirebaseAuth.instance.deleteUser(email: email);
     } catch (e) {
       // Handle any errors that occur during deletion
       print('Error deleting user: $e');
