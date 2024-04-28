@@ -27,7 +27,8 @@ class LearningMaterialPage extends StatelessWidget {
                   // Navigate to Training Video page
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => VideoUploader()),
+                    MaterialPageRoute(
+                        builder: (context) => VideoUploadScreen2()),
                   );
                 },
                 child: Text('Training Video'),

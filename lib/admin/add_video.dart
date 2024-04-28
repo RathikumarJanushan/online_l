@@ -1,41 +1,70 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:video_player/video_player.dart';
 
-class VideoUploader extends StatelessWidget {
+class VideoUploadScreen2 extends StatefulWidget {
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Video URL to Firestore',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: VideoForm(),
-    );
-  }
+  _VideoUploadScreen2State createState() => _VideoUploadScreen2State();
 }
 
-class VideoForm extends StatefulWidget {
-  @override
-  _VideoFormState createState() => _VideoFormState();
-}
+class _VideoUploadScreen2State extends State<VideoUploadScreen2> {
+  late File _video;
+  late VideoPlayerController _videoController;
+  final picker = ImagePicker();
+  bool _isUploading = false;
+  double _uploadProgress = 0.0;
 
-class _VideoFormState extends State<VideoForm> {
-  final TextEditingController _controller = TextEditingController();
-
-  Future<void> _saveVideoUrl() async {
-    try {
-      await FirebaseFirestore.instance.collection('videos').add({
-        'videoUrl': _controller.text.trim(),
+  Future<void> _pickVideo() async {
+    final pickedFile = await picker.pickVideo(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() {
+        _video = File(pickedFile.path);
+        _videoController = VideoPlayerController.file(_video)
+          ..initialize().then((_) {
+            setState(() {});
+          });
       });
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Video URL saved successfully!'),
-      ));
+    }
+  }
+
+  Future<void> _uploadVideo() async {
+    if (_video == null) return; // No video selected
+    setState(() {
+      _isUploading = true;
+    });
+    try {
+      FirebaseStorage storage = FirebaseStorage.instance;
+      Reference ref =
+          storage.ref().child("videos/${DateTime.now().toString()}");
+      UploadTask uploadTask = ref.putFile(_video);
+      uploadTask.snapshotEvents.listen((TaskSnapshot snapshot) {
+        setState(() {
+          _uploadProgress = snapshot.bytesTransferred / snapshot.totalBytes;
+        });
+      });
+      await uploadTask.whenComplete(() {
+        setState(() {
+          _isUploading = false;
+          _uploadProgress = 0.0;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Video uploaded successfully!'),
+          ),
+        );
+      });
     } catch (e) {
-      print('Error saving video URL: $e');
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Failed to save video URL. Please try again.'),
-      ));
+      setState(() {
+        _isUploading = false;
+        _uploadProgress = 0.0;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error uploading video: $e'),
+        ),
+      );
     }
   }
 
@@ -43,23 +72,32 @@ class _VideoFormState extends State<VideoForm> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Save Video URL to Firestore'),
+        title: Text('Upload Video'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
+      body: Center(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            TextField(
-              controller: _controller,
-              decoration: InputDecoration(
-                labelText: 'Enter Video URL',
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            if (_videoController != null &&
+                _videoController.value.isInitialized)
+              AspectRatio(
+                aspectRatio: _videoController.value.aspectRatio,
+                child: VideoPlayer(_videoController),
               ),
-            ),
-            SizedBox(height: 20),
+            SizedBox(height: 20.0),
+            if (_isUploading)
+              LinearProgressIndicator(
+                value: _uploadProgress,
+              ),
+            SizedBox(height: 20.0),
             ElevatedButton(
-              onPressed: _saveVideoUrl,
-              child: Text('Save'),
+              onPressed: _pickVideo,
+              child: Text('Select Video'),
+            ),
+            SizedBox(height: 20.0),
+            ElevatedButton(
+              onPressed: _uploadVideo,
+              child: Text('Upload Video'),
             ),
           ],
         ),

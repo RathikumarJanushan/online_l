@@ -22,15 +22,22 @@ class Marks extends StatelessWidget {
               itemCount: snapshot.data?.docs.length,
               itemBuilder: (context, index) {
                 DocumentSnapshot marks = snapshot.data!.docs[index];
-                Map<String, dynamic> data = marks.data() as Map<String, dynamic>;
-                String name = data['name'] ?? 'Unknown'; // Handle null name field
+                Map<String, dynamic> data =
+                    marks.data() as Map<String, dynamic>;
+                String name =
+                    data['name'] ?? 'Unknown'; // Handle null name field
                 int assessment1 = data['Assessment1'] ?? 0;
                 int assessment2 = data['Assessment2'] ?? 0;
                 int assessment3 = data['Assessment3'] ?? 0;
                 int game1 = data['game1'] ?? 0;
                 int game2 = data['game2'] ?? 0;
                 int game3 = data['game3'] ?? 0;
-                int totalValue = assessment1 + assessment2 + assessment3 + game1 + game2 + game3;
+                int totalValue = assessment1 +
+                    assessment2 +
+                    assessment3 +
+                    game1 +
+                    game2 +
+                    game3;
                 return Card(
                   elevation: 4.0,
                   margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
@@ -72,10 +79,4 @@ class Marks extends StatelessWidget {
       ),
     );
   }
-}
-
-void main() {
-  runApp(MaterialApp(
-    home: Marks(),
-  ));
 }

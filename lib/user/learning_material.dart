@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:online_learning/user/Assessment/Assessment_m.dart';
 import 'package:online_learning/user/video.dart';
+import 'package:online_learning/user/video2.dart';
 
 import 'package:online_learning/user/game/game.dart';
 
@@ -28,12 +29,30 @@ class LearningMaterialPage extends StatelessWidget {
                   // Navigate to Training Video page
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => VideoPlayerApp()),
+                    MaterialPageRoute(builder: (context) => HomePage()),
                   );
                 },
                 child: Text('Training Video'),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Color.fromARGB(255, 1, 235, 235),
+                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                ),
+              ),
+              SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  // Navigate to Game Hub page
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => VideoUploader2()),
+                  );
+                },
+                child: Text('videouu'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.greenAccent,
                   padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20),
