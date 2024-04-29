@@ -71,6 +71,13 @@ flutter:
   assets:
     - assets/PMSbackground.png
     - assets/logo.png
+    - assets/Learning.jpg
+    - assets/assessment.avif
+    - assets/game.jpg
+    - assets/assessment1.jpg
+    - assets/i_game.jpg
+    - assets/s_game.jpg
+    - assets/t_game.webp
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

@@ -118,81 +118,90 @@ class _AssessmentScreen2State extends State<AssessmentScreen2> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Assessment'),
+        title: Text('Assessment 2'),
       ),
-      body: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text(
-              'Questions',
-              style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 16.0),
-            Expanded(
-              child: ListView.builder(
-                itemCount: _questions.length,
-                itemBuilder: (context, questionIndex) {
-                  Map<String, dynamic> question = _questions[questionIndex];
-                  List<dynamic> options = question['options'];
-                  String correctOption = question['correctOption'];
-                  return Card(
-                    elevation: 4.0,
-                    margin: EdgeInsets.symmetric(vertical: 8.0),
-                    child: Padding(
-                      padding: EdgeInsets.all(16.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          Text(
-                            question['question'],
-                            style: TextStyle(
-                              fontSize: 18.0,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          SizedBox(height: 16.0),
-                          ...List.generate(
-                            options.length,
-                            (optionIndex) {
-                              String option = options[optionIndex];
-                              bool isCorrect = option == correctOption;
-                              return ElevatedButton(
-                                onPressed: () {
-                                  _submitAnswer(questionIndex, optionIndex,
-                                      correctOption, context);
-                                },
-                                style: ButtonStyle(
-                                  backgroundColor:
-                                      _selectedOptions[questionIndex] != null &&
-                                              optionIndex ==
-                                                  _selectedOptions[
-                                                      questionIndex]
-                                          ? (isCorrect
-                                              ? MaterialStateProperty.all(
-                                                  Colors.green)
-                                              : MaterialStateProperty.all(
-                                                  Colors.red))
-                                          : null,
-                                ),
-                                child: Text(option),
-                              );
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                },
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage(
+                'assets/PMSbackground.png'), // Replace 'assets/background_image.jpg' with your image path
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: Padding(
+          padding: EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(
+                'Questions',
+                style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
               ),
-            ),
-            SizedBox(height: 16.0),
-            Text(
-              'Correct Answers: $_correctAnswersCount',
-              style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
-            ),
-          ],
+              SizedBox(height: 16.0),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: _questions.length,
+                  itemBuilder: (context, questionIndex) {
+                    Map<String, dynamic> question = _questions[questionIndex];
+                    List<dynamic> options = question['options'];
+                    String correctOption = question['correctOption'];
+                    return Card(
+                      elevation: 4.0,
+                      margin: EdgeInsets.symmetric(vertical: 8.0),
+                      child: Padding(
+                        padding: EdgeInsets.all(16.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Text(
+                              question['question'],
+                              style: TextStyle(
+                                fontSize: 18.0,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            SizedBox(height: 16.0),
+                            ...List.generate(
+                              options.length,
+                              (optionIndex) {
+                                String option = options[optionIndex];
+                                bool isCorrect = option == correctOption;
+                                return ElevatedButton(
+                                  onPressed: () {
+                                    _submitAnswer(questionIndex, optionIndex,
+                                        correctOption, context);
+                                  },
+                                  style: ButtonStyle(
+                                    backgroundColor: _selectedOptions[
+                                                    questionIndex] !=
+                                                null &&
+                                            optionIndex ==
+                                                _selectedOptions[questionIndex]
+                                        ? (isCorrect
+                                            ? MaterialStateProperty.all(
+                                                Colors.green)
+                                            : MaterialStateProperty.all(
+                                                Colors.red))
+                                        : null,
+                                  ),
+                                  child: Text(option),
+                                );
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+              SizedBox(height: 16.0),
+              Text(
+                'Correct Answers: $_correctAnswersCount',
+                style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+              ),
+            ],
+          ),
         ),
       ),
     );

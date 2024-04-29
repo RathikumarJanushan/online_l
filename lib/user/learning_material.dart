@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:online_learning/user/Assessment/Assessment_m.dart';
 import 'package:online_learning/user/video.dart';
-import 'package:online_learning/user/video2.dart';
 
 import 'package:online_learning/user/game/game.dart';
 
@@ -24,74 +23,159 @@ class LearningMaterialPage extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              ElevatedButton(
-                onPressed: () {
-                  // Navigate to Training Video page
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => HomePage()),
-                  );
-                },
-                child: Text('Training Video'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Color.fromARGB(255, 1, 235, 235),
-                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                ),
-              ),
-              SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
+              GestureDetector(
+                onTap: () {
                   // Navigate to Game Hub page
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => VideoUploader2()),
+                    MaterialPageRoute(builder: (context) => VideoPage()),
                   );
                 },
-                child: Text('videouu'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.greenAccent,
-                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
+                child: Container(
+                  width: 200, // Adjust width as needed
+                  height:
+                      150, // Adjust height as needed to accommodate both image and text
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(
+                        20), // Add border radius for rounded corners
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.5), // Add shadow color
+                        spreadRadius: 5, // Add spread radius
+                        blurRadius: 7, // Add blur radius
+                        offset: Offset(0, 3), // Add offset
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(
+                            20), // Match the container's border radius
+                        child: Image.asset(
+                          'assets/Learning.jpg', // Path to your game hub icon asset
+                          fit: BoxFit
+                              .cover, // Ensure the image covers the entire container
+                          width: 200, // Adjust width as needed
+                          height: 100, // Adjust height as needed
+                        ),
+                      ),
+                      SizedBox(
+                          height: 10), // Add spacing between image and text
+                      Text(
+                        'Learning Video', // Your text
+                        style: TextStyle(
+                          fontSize: 20, // Adjust font size as needed
+                          fontWeight:
+                              FontWeight.bold, // Add font weight if needed
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
-              SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
+              GestureDetector(
+                onTap: () {
+                  // Navigate to Game Hub page
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => Assessment()),
+                  );
+                },
+                child: Container(
+                  width: 200, // Adjust width as needed
+                  height:
+                      150, // Adjust height as needed to accommodate both image and text
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(
+                        20), // Add border radius for rounded corners
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.5), // Add shadow color
+                        spreadRadius: 5, // Add spread radius
+                        blurRadius: 7, // Add blur radius
+                        offset: Offset(0, 3), // Add offset
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(
+                            20), // Match the container's border radius
+                        child: Image.asset(
+                          'assets/assessment.avif', // Path to your game hub icon asset
+                          fit: BoxFit
+                              .cover, // Ensure the image covers the entire container
+                          width: 200, // Adjust width as needed
+                          height: 100, // Adjust height as needed
+                        ),
+                      ),
+                      SizedBox(
+                          height: 10), // Add spacing between image and text
+                      Text(
+                        'Assessment', // Your text
+                        style: TextStyle(
+                          fontSize: 20, // Adjust font size as needed
+                          fontWeight:
+                              FontWeight.bold, // Add font weight if needed
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              GestureDetector(
+                onTap: () {
                   // Navigate to Game Hub page
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => co_game()),
                   );
                 },
-                child: Text('Game Hub'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.greenAccent,
-                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
+                child: Container(
+                  width: 200, // Adjust width as needed
+                  height:
+                      150, // Adjust height as needed to accommodate both image and text
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(
+                        20), // Add border radius for rounded corners
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.5), // Add shadow color
+                        spreadRadius: 5, // Add spread radius
+                        blurRadius: 7, // Add blur radius
+                        offset: Offset(0, 3), // Add offset
+                      ),
+                    ],
                   ),
-                ),
-              ),
-              SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
-                  // Navigate to Assessment page
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => Assessment()),
-                  );
-                },
-                child: Text('Assessment'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Color.fromARGB(255, 2, 250, 212),
-                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(
+                            20), // Match the container's border radius
+                        child: Image.asset(
+                          'assets/game.jpg', // Path to your game hub icon asset
+                          fit: BoxFit
+                              .cover, // Ensure the image covers the entire container
+                          width: 200, // Adjust width as needed
+                          height: 100, // Adjust height as needed
+                        ),
+                      ),
+                      SizedBox(
+                          height: 10), // Add spacing between image and text
+                      Text(
+                        'Game Hub', // Your text
+                        style: TextStyle(
+                          fontSize: 20, // Adjust font size as needed
+                          fontWeight:
+                              FontWeight.bold, // Add font weight if needed
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),

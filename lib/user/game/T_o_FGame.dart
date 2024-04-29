@@ -123,103 +123,116 @@ class _ImageQuestionScreen2State extends State<ImageQuestionScreen2> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('ImageQuestionScreen2'),
+        title: Text('True or False'),
       ),
-      body: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            if (_currentQuestionIndex < _images.length)
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Text(
-                    _images[_currentQuestionIndex]['question'],
-                    style: TextStyle(
-                      fontSize: 24.0,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  SizedBox(height: 16.0),
-                  Card(
-                    elevation: 4.0,
-                    margin: EdgeInsets.symmetric(vertical: 8.0),
-                    child: Padding(
-                      padding: EdgeInsets.all(16.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          Container(
-                            width: 200,
-                            height: 200,
-                            child: Image.network(
-                              _images[_currentQuestionIndex]['imageUrl'],
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                          SizedBox(height: 16.0),
-                          ElevatedButton(
-                            onPressed: () {
-                              _submitAnswer(
-                                  0,
-                                  _images[_currentQuestionIndex]['selection'],
-                                  context);
-                            },
-                            style: ButtonStyle(
-                              backgroundColor: _selectedOptions[
-                                              _currentQuestionIndex] !=
-                                          null &&
-                                      0 ==
-                                          _selectedOptions[
-                                              _currentQuestionIndex]
-                                  ? (_images[_currentQuestionIndex]['selection']
-                                      ? MaterialStateProperty.all(Colors.green)
-                                      : MaterialStateProperty.all(Colors.red))
-                                  : null,
-                            ),
-                            child: Text('True'),
-                          ),
-                          SizedBox(height: 16.0),
-                          ElevatedButton(
-                            onPressed: () {
-                              _submitAnswer(
-                                  1,
-                                  !_images[_currentQuestionIndex]['selection'],
-                                  context);
-                            },
-                            style: ButtonStyle(
-                              backgroundColor: _selectedOptions[
-                                              _currentQuestionIndex] !=
-                                          null &&
-                                      1 ==
-                                          _selectedOptions[
-                                              _currentQuestionIndex]
-                                  ? (!_images[_currentQuestionIndex]
-                                          ['selection']
-                                      ? MaterialStateProperty.all(Colors.green)
-                                      : MaterialStateProperty.all(Colors.red))
-                                  : null,
-                            ),
-                            child: Text('False'),
-                          ),
-                        ],
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage(
+                'assets/PMSbackground.png'), // Replace 'assets/background_image.jpg' with your image path
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: Padding(
+          padding: EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              if (_currentQuestionIndex < _images.length)
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Text(
+                      _images[_currentQuestionIndex]['question'],
+                      style: TextStyle(
+                        fontSize: 24.0,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
-                  ),
-                  SizedBox(height: 16.0),
-                  ElevatedButton(
-                    onPressed: _nextQuestion,
-                    child: Text('Next'),
-                  ),
-                ],
+                    SizedBox(height: 16.0),
+                    Card(
+                      elevation: 4.0,
+                      margin: EdgeInsets.symmetric(vertical: 8.0),
+                      child: Padding(
+                        padding: EdgeInsets.all(16.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Container(
+                              width: 200,
+                              height: 200,
+                              child: Image.network(
+                                _images[_currentQuestionIndex]['imageUrl'],
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                            SizedBox(height: 16.0),
+                            ElevatedButton(
+                              onPressed: () {
+                                _submitAnswer(
+                                    0,
+                                    _images[_currentQuestionIndex]['selection'],
+                                    context);
+                              },
+                              style: ButtonStyle(
+                                backgroundColor: _selectedOptions[
+                                                _currentQuestionIndex] !=
+                                            null &&
+                                        0 ==
+                                            _selectedOptions[
+                                                _currentQuestionIndex]
+                                    ? (_images[_currentQuestionIndex]
+                                            ['selection']
+                                        ? MaterialStateProperty.all(
+                                            Colors.green)
+                                        : MaterialStateProperty.all(Colors.red))
+                                    : null,
+                              ),
+                              child: Text('True'),
+                            ),
+                            SizedBox(height: 16.0),
+                            ElevatedButton(
+                              onPressed: () {
+                                _submitAnswer(
+                                    1,
+                                    !_images[_currentQuestionIndex]
+                                        ['selection'],
+                                    context);
+                              },
+                              style: ButtonStyle(
+                                backgroundColor: _selectedOptions[
+                                                _currentQuestionIndex] !=
+                                            null &&
+                                        1 ==
+                                            _selectedOptions[
+                                                _currentQuestionIndex]
+                                    ? (!_images[_currentQuestionIndex]
+                                            ['selection']
+                                        ? MaterialStateProperty.all(
+                                            Colors.green)
+                                        : MaterialStateProperty.all(Colors.red))
+                                    : null,
+                              ),
+                              child: Text('False'),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 16.0),
+                    ElevatedButton(
+                      onPressed: _nextQuestion,
+                      child: Text('Next'),
+                    ),
+                  ],
+                ),
+              SizedBox(height: 16.0),
+              Text(
+                'Correct Answers: $_correctScoreCount',
+                style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
               ),
-            SizedBox(height: 16.0),
-            Text(
-              'Correct Answers: $_correctScoreCount',
-              style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

@@ -70,7 +70,8 @@ class _assessmentScreen1State extends State<assessmentScreen1> {
 
     // Get the current user's ID and email
     String userId = FirebaseAuth.instance.currentUser!.uid;
-    String userName = FirebaseAuth.instance.currentUser!.email ?? FirebaseAuth.instance.currentUser!.displayName!;
+    String userName = FirebaseAuth.instance.currentUser!.email ??
+        FirebaseAuth.instance.currentUser!.displayName!;
 
     // Perform the Firestore transaction
     await _updateAssessmentMarks(userId, userName, assessmentMarks);
@@ -90,7 +91,8 @@ class _assessmentScreen1State extends State<assessmentScreen1> {
 
       if (!doc.exists) {
         // If the document doesn't exist, create it with Assessment1 only
-        transaction.set(docRef, {'Assessment1': assessmentMarks, 'name': userName});
+        transaction
+            .set(docRef, {'Assessment1': assessmentMarks, 'name': userName});
       } else {
         // If the document exists, update Assessment1 only
         final currentData = doc.data()!;
@@ -114,86 +116,94 @@ class _assessmentScreen1State extends State<assessmentScreen1> {
     });
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('assessment'),
       ),
-      body: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text(
-              'Questions',
-              style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 16.0),
-            Expanded(
-              child: ListView.builder(
-                itemCount: _questions.length,
-                itemBuilder: (context, questionIndex) {
-                  Map<String, dynamic> question = _questions[questionIndex];
-                  List<dynamic> options = question['options'];
-                  String correctOption = question['correctOption'];
-                  return Card(
-                    elevation: 4.0,
-                    margin: EdgeInsets.symmetric(vertical: 8.0),
-                    child: Padding(
-                      padding: EdgeInsets.all(16.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          Text(
-                            question['question'],
-                            style: TextStyle(
-                              fontSize: 18.0,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          SizedBox(height: 16.0),
-                          ...List.generate(
-                            options.length,
-                            (optionIndex) {
-                              String option = options[optionIndex];
-                              bool isCorrect = option == correctOption;
-                              return ElevatedButton(
-                                onPressed: () {
-                                  _submitAnswer(questionIndex, optionIndex,
-                                      correctOption, context);
-                                },
-                                style: ButtonStyle(
-                                  backgroundColor:
-                                      _selectedOptions[questionIndex] != null &&
-                                              optionIndex ==
-                                                  _selectedOptions[
-                                                      questionIndex]
-                                          ? (isCorrect
-                                              ? MaterialStateProperty.all(
-                                                  Colors.green)
-                                              : MaterialStateProperty.all(
-                                                  Colors.red))
-                                          : null,
-                                ),
-                                child: Text(option),
-                              );
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                },
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage(
+                'assets/PMSbackground.png'), // Replace 'assets/background_image.jpg' with your image path
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: Padding(
+          padding: EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(
+                'Questions',
+                style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
               ),
-            ),
-            SizedBox(height: 16.0),
-            Text(
-              'Correct Answers: $_correctAnswersCount',
-              style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
-            ),
-          ],
+              SizedBox(height: 16.0),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: _questions.length,
+                  itemBuilder: (context, questionIndex) {
+                    Map<String, dynamic> question = _questions[questionIndex];
+                    List<dynamic> options = question['options'];
+                    String correctOption = question['correctOption'];
+                    return Card(
+                      elevation: 4.0,
+                      margin: EdgeInsets.symmetric(vertical: 8.0),
+                      child: Padding(
+                        padding: EdgeInsets.all(16.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Text(
+                              question['question'],
+                              style: TextStyle(
+                                fontSize: 18.0,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            SizedBox(height: 16.0),
+                            ...List.generate(
+                              options.length,
+                              (optionIndex) {
+                                String option = options[optionIndex];
+                                bool isCorrect = option == correctOption;
+                                return ElevatedButton(
+                                  onPressed: () {
+                                    _submitAnswer(questionIndex, optionIndex,
+                                        correctOption, context);
+                                  },
+                                  style: ButtonStyle(
+                                    backgroundColor: _selectedOptions[
+                                                    questionIndex] !=
+                                                null &&
+                                            optionIndex ==
+                                                _selectedOptions[questionIndex]
+                                        ? (isCorrect
+                                            ? MaterialStateProperty.all(
+                                                Colors.green)
+                                            : MaterialStateProperty.all(
+                                                Colors.red))
+                                        : null,
+                                  ),
+                                  child: Text(option),
+                                );
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+              SizedBox(height: 16.0),
+              Text(
+                'Correct Answers: $_correctAnswersCount',
+                style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -6,6 +6,7 @@ import 'package:online_learning/admin/adminhome_screen.dart';
 import 'package:online_learning/user/home_screen.dart';
 import 'package:online_learning/widgets/button.dart';
 import 'package:online_learning/widgets/textfield.dart';
+import 'package:online_learning/auth/reset.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -41,13 +42,7 @@ class _LoginScreenState extends State<LoginScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 25),
           child: Column(
             children: [
-              const SizedBox(height: 50),
-              // Logo image
-              Image.asset(
-                "assets/logo.png", // Path to your logo image asset
-                width: 150, // Adjust width as needed
-              ),
-              const SizedBox(height: 30),
+              const Spacer(),
               const Text("Login",
                   style: TextStyle(fontSize: 40, fontWeight: FontWeight.w500)),
               const SizedBox(height: 50),
@@ -121,6 +116,36 @@ class _LoginScreenState extends State<LoginScreen> {
       }
     } else {
       print("Login failed");
+      // Show option to reset password
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("Reset Password"),
+            content: Text("Would you like to reset your password?"),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context); // Close the dialog
+                },
+                child: Text("No"),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context); // Close the dialog
+                  // Navigate to the ResetPasswordScreen
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ResetPasswordScreen()),
+                  );
+                },
+                child: Text("Yes"),
+              ),
+            ],
+          );
+        },
+      );
     }
   }
 }

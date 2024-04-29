@@ -105,76 +105,85 @@ class _CoGaneState extends State<CoGane> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('CoGane'),
+        title: Text('count game'),
       ),
-      body: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            if (_currentQuestionIndex < _questions.length)
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Text(
-                    'Question: ${_questions[_currentQuestionIndex]['question']}',
-                    style: TextStyle(
-                      fontSize: 20.0,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  SizedBox(height: 16.0),
-                  Card(
-                    elevation: 4.0,
-                    margin: EdgeInsets.symmetric(vertical: 8.0),
-                    child: Padding(
-                      padding: EdgeInsets.all(16.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          Container(
-                            width: 200,
-                            height: 200,
-                            child: Image.network(
-                              _questions[_currentQuestionIndex]['imageUrl'],
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                          SizedBox(height: 16.0),
-                          TextField(
-                            controller: _answerController,
-                            decoration: InputDecoration(
-                              labelText: 'Your Answer',
-                              border: OutlineInputBorder(),
-                            ),
-                          ),
-                        ],
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage(
+                'assets/PMSbackground.png'), // Replace 'assets/background_image.jpg' with your image path
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: Padding(
+          padding: EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              if (_currentQuestionIndex < _questions.length)
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Text(
+                      'Question: ${_questions[_currentQuestionIndex]['question']}',
+                      style: TextStyle(
+                        fontSize: 20.0,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
-                  ),
-                  SizedBox(height: 16.0),
-                  ElevatedButton(
-                    onPressed: () {
-                      _checkAnswer(_answerController.text);
-                    },
-                    child: Text('Submit Answer'),
-                  ),
-                  SizedBox(height: 16.0),
-                  ElevatedButton(
-                    onPressed: _nextQuestion,
-                    child: Text('Next'),
-                  ),
-                ],
+                    SizedBox(height: 16.0),
+                    Card(
+                      elevation: 4.0,
+                      margin: EdgeInsets.symmetric(vertical: 8.0),
+                      child: Padding(
+                        padding: EdgeInsets.all(16.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Container(
+                              width: 200,
+                              height: 200,
+                              child: Image.network(
+                                _questions[_currentQuestionIndex]['imageUrl'],
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                            SizedBox(height: 16.0),
+                            TextField(
+                              controller: _answerController,
+                              decoration: InputDecoration(
+                                labelText: 'Your Answer',
+                                border: OutlineInputBorder(),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 16.0),
+                    ElevatedButton(
+                      onPressed: () {
+                        _checkAnswer(_answerController.text);
+                      },
+                      child: Text('Submit Answer'),
+                    ),
+                    SizedBox(height: 16.0),
+                    ElevatedButton(
+                      onPressed: _nextQuestion,
+                      child: Text('Next'),
+                    ),
+                  ],
+                ),
+              SizedBox(height: 16.0),
+              Text(
+                'Score: $_score',
+                style: TextStyle(
+                  fontSize: 18.0,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-            SizedBox(height: 16.0),
-            Text(
-              'Score: $_score',
-              style: TextStyle(
-                fontSize: 18.0,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

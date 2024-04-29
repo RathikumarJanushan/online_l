@@ -1,107 +1,118 @@
-import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:video_player/video_player.dart';
 
-class VideoUploadScreen2 extends StatefulWidget {
+class VideoPage extends StatefulWidget {
   @override
-  _VideoUploadScreen2State createState() => _VideoUploadScreen2State();
+  _VideoPageState createState() => _VideoPageState();
 }
 
-class _VideoUploadScreen2State extends State<VideoUploadScreen2> {
-  late File _video;
-  late VideoPlayerController _videoController;
-  final picker = ImagePicker();
-  bool _isUploading = false;
-  double _uploadProgress = 0.0;
-
-  Future<void> _pickVideo() async {
-    final pickedFile = await picker.pickVideo(source: ImageSource.gallery);
-    if (pickedFile != null) {
-      setState(() {
-        _video = File(pickedFile.path);
-        _videoController = VideoPlayerController.file(_video)
-          ..initialize().then((_) {
-            setState(() {});
-          });
-      });
-    }
-  }
-
-  Future<void> _uploadVideo() async {
-    if (_video == null) return; // No video selected
-    setState(() {
-      _isUploading = true;
-    });
-    try {
-      FirebaseStorage storage = FirebaseStorage.instance;
-      Reference ref =
-          storage.ref().child("videos/${DateTime.now().toString()}");
-      UploadTask uploadTask = ref.putFile(_video);
-      uploadTask.snapshotEvents.listen((TaskSnapshot snapshot) {
-        setState(() {
-          _uploadProgress = snapshot.bytesTransferred / snapshot.totalBytes;
-        });
-      });
-      await uploadTask.whenComplete(() {
-        setState(() {
-          _isUploading = false;
-          _uploadProgress = 0.0;
-        });
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Video uploaded successfully!'),
-          ),
-        );
-      });
-    } catch (e) {
-      setState(() {
-        _isUploading = false;
-        _uploadProgress = 0.0;
-      });
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Error uploading video: $e'),
-        ),
-      );
-    }
-  }
-
+class _VideoPageState extends State<VideoPage> {
+  TextEditingController _addItemController = TextEditingController();
+  late DocumentReference<Object?> linkRef;
+  List<String> videoID = [];
+  bool showItem = false;
+  final utube =
+      RegExp(r"^(https?\:\/\/)?((www\.)?youtube\.com|youtu\.?be)\/.+$");
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Upload Video'),
+        title: Text('Add Video URL'),
+        backgroundColor: Colors.redAccent,
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            if (_videoController != null &&
-                _videoController.value.isInitialized)
-              AspectRatio(
-                aspectRatio: _videoController.value.aspectRatio,
-                child: VideoPlayer(_videoController),
+      body: Column(
+        children: [
+          Container(
+            margin: EdgeInsets.symmetric(horizontal: 8),
+            child: TextField(
+              controller: _addItemController,
+              onEditingComplete: () {
+                if (utube.hasMatch(_addItemController.text)) {
+                  _addItemFuntion();
+                } else {
+                  FocusScope.of(this.context).unfocus();
+                  _addItemController.clear();
+                  Flushbar(
+                    title: 'Invalid Link',
+                    message: 'Please provide a valid link',
+                    duration: Duration(seconds: 3),
+                    icon: Icon(
+                      Icons.error_outline,
+                      color: Colors.red,
+                    ),
+                  )..show(context);
+                }
+              },
+              style: TextStyle(fontSize: 16),
+              decoration: InputDecoration(
+                labelText: 'Your Video URL',
+                suffixIcon: GestureDetector(
+                  child: Icon(Icons.add, size: 32),
+                  onTap: () {
+                    if (utube.hasMatch(_addItemController.text)) {
+                      _addItemFuntion();
+                    } else {
+                      FocusScope.of(this.context).unfocus();
+                      _addItemController.clear();
+                      Flushbar(
+                        title: 'Invalid Link',
+                        message: 'Please provide a valid link',
+                        duration: Duration(seconds: 3),
+                        icon: Icon(
+                          Icons.error_outline,
+                          color: Colors.red,
+                        ),
+                      )..show(context);
+                    }
+                  },
+                ),
               ),
-            SizedBox(height: 20.0),
-            if (_isUploading)
-              LinearProgressIndicator(
-                value: _uploadProgress,
-              ),
-            SizedBox(height: 20.0),
-            ElevatedButton(
-              onPressed: _pickVideo,
-              child: Text('Select Video'),
             ),
-            SizedBox(height: 20.0),
-            ElevatedButton(
-              onPressed: _uploadVideo,
-              child: Text('Upload Video'),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
+  }
+
+  @override
+  void initState() {
+    linkRef = FirebaseFirestore.instance.collection('links').doc('urls');
+    super.initState();
+    getData();
+    print(videoID);
+  }
+
+  _addItemFuntion() async {
+    await linkRef.set({
+      _addItemController.text.toString(): _addItemController.text.toString()
+    }, SetOptions(merge: true));
+    Flushbar(
+        title: 'Added',
+        message: 'Updating...',
+        duration: Duration(seconds: 3),
+        icon: Icon(Icons.info_outline))
+      ..show(context);
+    setState(() {
+      videoID.add(_addItemController.text);
+    });
+    print('Added');
+    FocusScope.of(this.context).unfocus();
+    _addItemController.clear();
+  }
+
+  getData() async {
+    await linkRef.get().then((value) {
+      final data =
+          value.data() as Map<String, dynamic>?; // Cast to Map<String, dynamic>
+      data?.forEach((key, value) {
+        if (!videoID.contains(value)) {
+          videoID.add(value);
+        }
+      });
+    }).whenComplete(() => setState(() {
+          videoID.shuffle();
+          showItem = true;
+        }));
   }
 }
