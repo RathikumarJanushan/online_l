@@ -2,14 +2,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
-class VideoPage extends StatefulWidget {
+class VideosPage extends StatefulWidget {
   @override
   _VideoPageState createState() => _VideoPageState();
 }
 
-class _VideoPageState extends State<VideoPage> {
-  late DocumentReference<Object?> linkRef;
-  List<String> videoID = [];
+class _VideoPageState extends State<VideosPage> {
+  late CollectionReference<Map<String, dynamic>> linkRef;
+  List<Map<String, String>> videos = [];
   bool showItem = false;
 
   @override
@@ -25,29 +25,37 @@ class _VideoPageState extends State<VideoPage> {
             child: Container(
               margin: EdgeInsets.symmetric(horizontal: 4),
               child: ListView.builder(
-                itemCount: videoID.length,
+                itemCount: videos.length,
                 itemBuilder: (context, index) {
-                  final videoUrl = videoID[index];
+                  final videoUrl = videos[index]['url'];
+                  final videoDescription = videos[index]['description'];
                   if (videoUrl != null) {
                     final videoId = YoutubePlayer.convertUrlToId(videoUrl,
                         trimWhitespaces: true);
                     if (videoId != null) {
-                      return Container(
-                        margin: EdgeInsets.all(8),
-                        child: YoutubePlayer(
-                          controller: YoutubePlayerController(
-                            initialVideoId: videoId,
-                            flags: YoutubePlayerFlags(
-                              autoPlay: false,
+                      return Column(
+                        children: [
+                          YoutubePlayer(
+                            controller: YoutubePlayerController(
+                              initialVideoId: videoId,
+                              flags: YoutubePlayerFlags(
+                                autoPlay: false,
+                              ),
+                            ),
+                            showVideoProgressIndicator: true,
+                            progressIndicatorColor: Colors.blue,
+                            progressColors: ProgressBarColors(
+                              playedColor: Colors.blue,
+                              handleColor: Colors.blueAccent,
                             ),
                           ),
-                          showVideoProgressIndicator: true,
-                          progressIndicatorColor: Colors.blue,
-                          progressColors: ProgressBarColors(
-                            playedColor: Colors.blue,
-                            handleColor: Colors.blueAccent,
+                          SizedBox(height: 8),
+                          Text(
+                            videoDescription ?? 'No description available',
+                            style: TextStyle(fontSize: 16),
                           ),
-                        ),
+                          Divider(),
+                        ],
                       );
                     }
                   }
@@ -63,26 +71,25 @@ class _VideoPageState extends State<VideoPage> {
 
   @override
   void initState() {
-    linkRef = FirebaseFirestore.instance.collection('links').doc('urls');
+    linkRef = FirebaseFirestore.instance.collection('links');
     super.initState();
     getData();
-    print(videoID);
   }
 
   getData() async {
-    await linkRef.get().then((value) {
-      final data =
-          value.data() as Map<String, dynamic>?; // Cast to Map<String, dynamic>
-      data?.forEach((key, value) {
-        if (!videoID.contains(value)) {
-          setState(() {
-            videoID.add(value);
-          });
-        }
+    await linkRef.get().then((querySnapshot) {
+      querySnapshot.docs.forEach((doc) {
+        final data = doc.data();
+        videos.add({
+          'url': data['url'],
+          'description': data['description'],
+        });
       });
-    }).whenComplete(() => setState(() {
-          videoID.shuffle();
-          showItem = true;
-        }));
+      setState(() {
+        showItem = true;
+      });
+    }).catchError((error) {
+      print('Error fetching data: $error');
+    });
   }
 }

@@ -1,9 +1,14 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
+import 'package:online_learning/admin/add_video.dart';
+
 import 'package:online_learning/auth/auth_service.dart';
 import 'package:online_learning/auth/signup_screen.dart';
 import 'package:online_learning/admin/adminhome_screen.dart';
+import 'package:online_learning/user/game/game.dart';
+import 'package:online_learning/user/video.dart';
 import 'package:online_learning/user/home_screen.dart';
+import 'package:online_learning/user/learning_material.dart';
 import 'package:online_learning/widgets/button.dart';
 import 'package:online_learning/widgets/textfield.dart';
 import 'package:online_learning/auth/reset.dart';
@@ -58,7 +63,20 @@ class _LoginScreenState extends State<LoginScreen> {
                 isPassword: true,
                 controller: _password,
               ),
-              const SizedBox(height: 30),
+              const SizedBox(height: 10),
+              TextButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => ResetPasswordScreen()),
+                  );
+                },
+                child: Text(
+                  "Forgotten Password?",
+                  style: TextStyle(color: Colors.blue),
+                ),
+              ),
+              const SizedBox(height: 20),
               CustomButton(
                 label: "Login",
                 onPressed: _login,
@@ -89,17 +107,23 @@ class _LoginScreenState extends State<LoginScreen> {
 
   goToHome(BuildContext context) => Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => const HomeScreen()),
+        MaterialPageRoute(builder: (context) => LearningMaterialPage()),
       );
 
   goToAdminHome(BuildContext context) => Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => const AdminhomeomeScreen()),
+        MaterialPageRoute(builder: (context) =>  AdminhomeomeScreen()),
       );
+
   _login() async {
     print("Attempting login with email: ${_email.text}");
-    final user =
-        await _auth.loginUserWithEmailAndPassword(_email.text, _password.text);
+
+    if (_password.text.isEmpty) {
+      _showErrorDialog("Password field cannot be empty.");
+      return;
+    }
+
+    final user = await _auth.loginUserWithEmailAndPassword(_email.text, _password.text);
 
     if (user != null) {
       log("User Logged In: ${user.uid}");
@@ -116,36 +140,27 @@ class _LoginScreenState extends State<LoginScreen> {
       }
     } else {
       print("Login failed");
-      // Show option to reset password
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text("Reset Password"),
-            content: Text("Would you like to reset your password?"),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context); // Close the dialog
-                },
-                child: Text("No"),
-              ),
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context); // Close the dialog
-                  // Navigate to the ResetPasswordScreen
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => ResetPasswordScreen()),
-                  );
-                },
-                child: Text("Yes"),
-              ),
-            ],
-          );
-        },
-      );
+      _showErrorDialog("Incorrect email or password. Please try again.");
     }
+  }
+
+  void _showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Error"),
+          content: Text(message),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context); // Close the dialog
+              },
+              child: Text("OK"),
+            ),
+          ],
+        );
+      },
+    );
   }
 }

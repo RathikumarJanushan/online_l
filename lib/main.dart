@@ -32,9 +32,16 @@ class SplashScreen extends StatelessWidget {
 
     return Scaffold(
       body: Center(
-        child: Text(
-          'Welcome!',
-          style: TextStyle(fontSize: 24),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset('assets/logo.png'), 
+            SizedBox(height: 20),
+            Text(
+              'Welcome to AutiFlow !',
+              style: TextStyle(fontSize: 24),
+            ),
+          ],
         ),
       ),
     );
