@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -36,6 +37,18 @@ class _AddImagePageState extends State<AddImagePage> {
 
   final picker = ImagePicker();
 
+  String _generateRandomName() {
+    String alphabet = 'abcdefghijklmnopqrstuvwxyz';
+    Random random = Random();
+    String randomName = '';
+
+    for (int i = 0; i < 10; i++) {
+      randomName += alphabet[random.nextInt(alphabet.length)];
+    }
+
+    return randomName;
+  }
+
   Future<void> _getImage() async {
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
 
@@ -52,7 +65,9 @@ class _AddImagePageState extends State<AddImagePage> {
     try {
       if (_image != null) {
         FirebaseStorage storage = FirebaseStorage.instance;
-        Reference ref = storage.ref().child("image.jpg");
+        String randomName = _generateRandomName();
+        String fileName = '$randomName.jpg';
+        Reference ref = storage.ref().child(fileName);
         await ref.putFile(_image!);
         _imageUrl = await ref.getDownloadURL();
       }
@@ -71,7 +86,7 @@ class _AddImagePageState extends State<AddImagePage> {
           _option3Controller.text.isNotEmpty &&
           _option4Controller.text.isNotEmpty &&
           _correctOptionController.text.isNotEmpty) {
-        await FirebaseFirestore.instance.collection('images').add({
+        await FirebaseFirestore.instance.collection('game').add({
           'imageUrl': _imageUrl,
           'options': [
             _option1Controller.text,
@@ -109,97 +124,100 @@ class _AddImagePageState extends State<AddImagePage> {
       appBar: AppBar(
         title: Text('Add Image'),
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                _image != null
-                    ? Image.file(
-                        _image!,
-                        height: 200,
-                      )
-                    : SizedBox(
-                        height: 0,
-                      ),
-                ElevatedButton(
-                  onPressed: _getImage,
-                  child: Text('Select Image'),
-                ),
-                SizedBox(height: 20),
-                TextFormField(
-                  controller: _option1Controller,
-                  decoration: InputDecoration(labelText: 'Option 1'),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter option 1';
-                    }
-                    return null;
-                  },
-                ),
-                TextFormField(
-                  controller: _option2Controller,
-                  decoration: InputDecoration(labelText: 'Option 2'),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter option 2';
-                    }
-                    return null;
-                  },
-                ),
-                TextFormField(
-                  controller: _option3Controller,
-                  decoration: InputDecoration(labelText: 'Option 3'),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter option 3';
-                    }
-                    return null;
-                  },
-                ),
-                TextFormField(
-                  controller: _option4Controller,
-                  decoration: InputDecoration(labelText: 'Option 4'),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter option 4';
-                    }
-                    return null;
-                  },
-                ),
-                TextFormField(
-                  controller: _correctOptionController,
-                  decoration: InputDecoration(labelText: 'Correct Option'),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter correct option';
-                    }
-                    return null;
-                  },
-                ),
-                SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      _addImage();
-                    }
-                  },
-                  child: Text('Submit'),
-                ),
-              ],
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage(
+                'assets/PMSbackground.png'), // Replace 'assets/background_image.jpg' with your image path
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  _image != null
+                      ? Image.file(
+                          _image!,
+                          height: 200,
+                        )
+                      : SizedBox(
+                          height: 0,
+                        ),
+                  ElevatedButton(
+                    onPressed: _getImage,
+                    child: Text('Select Image'),
+                  ),
+                  SizedBox(height: 20),
+                  TextFormField(
+                    controller: _option1Controller,
+                    decoration: InputDecoration(labelText: 'Option 1'),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter option 1';
+                      }
+                      return null;
+                    },
+                  ),
+                  TextFormField(
+                    controller: _option2Controller,
+                    decoration: InputDecoration(labelText: 'Option 2'),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter option 2';
+                      }
+                      return null;
+                    },
+                  ),
+                  TextFormField(
+                    controller: _option3Controller,
+                    decoration: InputDecoration(labelText: 'Option 3'),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter option 3';
+                      }
+                      return null;
+                    },
+                  ),
+                  TextFormField(
+                    controller: _option4Controller,
+                    decoration: InputDecoration(labelText: 'Option 4'),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter option 4';
+                      }
+                      return null;
+                    },
+                  ),
+                  TextFormField(
+                    controller: _correctOptionController,
+                    decoration: InputDecoration(labelText: 'Correct Option'),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter correct option';
+                      }
+                      return null;
+                    },
+                  ),
+                  SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: () {
+                      if (_formKey.currentState!.validate()) {
+                        _addImage();
+                      }
+                    },
+                    child: Text('Submit'),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
       ),
     );
   }
-}
-
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
-  runApp(AddGame());
 }

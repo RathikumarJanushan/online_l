@@ -22,51 +22,61 @@ class QuizScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Quiz'),
-          leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
+        leading: Builder(
+          builder: (context) => IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
         ),
       ),
-      body: StreamBuilder<QuerySnapshot>(
-        stream: _firestore.collection('questions').snapshots(),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-          List<QueryDocumentSnapshot> questions = snapshot.data!.docs;
-          return ListView.builder(
-            itemCount: questions.length,
-            itemBuilder: (context, index) {
-              Map<String, dynamic> questionData =
-                  questions[index].data() as Map<String, dynamic>;
-              return ListTile(
-                title: Text(questionData['question']),
-                subtitle: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: List.generate(
-                    questionData['options'].length,
-                    (optionIndex) => Text(
-                      questionData['options'][optionIndex],
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/PMSbackground.png'),
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: StreamBuilder<QuerySnapshot>(
+          stream: _firestore.collection('questions').snapshots(),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+            List<QueryDocumentSnapshot> questions = snapshot.data!.docs;
+            return ListView.builder(
+              itemCount: questions.length,
+              itemBuilder: (context, index) {
+                Map<String, dynamic> questionData =
+                    questions[index].data() as Map<String, dynamic>;
+                return ListTile(
+                  title: Text(questionData['question']),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: List.generate(
+                      questionData['options'].length,
+                      (optionIndex) => Text(
+                        questionData['options'][optionIndex],
+                      ),
                     ),
                   ),
-                ),
-                trailing: IconButton(
-                  icon: Icon(Icons.delete),
-                  onPressed: () async {
-                    await _firestore
-                        .collection('questions')
-                        .doc(questions[index].id)
-                        .delete();
-                  },
-                ),
-              );
-            },
-          );
-        },
+                  trailing: IconButton(
+                    icon: Icon(Icons.delete),
+                    onPressed: () async {
+                      await _firestore
+                          .collection('questions')
+                          .doc(questions[index].id)
+                          .delete();
+                    },
+                  ),
+                );
+              },
+            );
+          },
+        ),
       ),
     );
   }

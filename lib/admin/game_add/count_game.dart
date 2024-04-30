@@ -70,51 +70,60 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
       appBar: AppBar(
         title: Text('Upload Image and Question'),
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: <Widget>[
-            SizedBox(height: 20),
-            _image == null
-                ? Text('No image selected.')
-                : Image.file(
-                    _image!,
-                    height: 200,
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage(
+                'assets/PMSbackground.png'), // Replace 'assets/background_image.jpg' with your image path
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: SingleChildScrollView(
+          child: Column(
+            children: <Widget>[
+              SizedBox(height: 20),
+              _image == null
+                  ? Text('No image selected.')
+                  : Image.file(
+                      _image!,
+                      height: 200,
+                    ),
+              SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: getImageFromGallery,
+                child: Text('Select Image'),
+              ),
+              SizedBox(height: 20),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextField(
+                  controller: questionController,
+                  decoration: InputDecoration(
+                    labelText: 'Enter Question',
+                    border: OutlineInputBorder(),
                   ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: getImageFromGallery,
-              child: Text('Select Image'),
-            ),
-            SizedBox(height: 20),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: TextField(
-                controller: questionController,
-                decoration: InputDecoration(
-                  labelText: 'Enter Question',
-                  border: OutlineInputBorder(),
                 ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: TextField(
-                controller: correctOptionController,
-                decoration: InputDecoration(
-                  labelText: 'Enter Correct Option',
-                  border: OutlineInputBorder(),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextField(
+                  controller: correctOptionController,
+                  decoration: InputDecoration(
+                    labelText: 'Enter Correct Option',
+                    border: OutlineInputBorder(),
+                  ),
                 ),
               ),
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () async {
-                String? imageUrl = await uploadImageToFirebase();
-                saveDataToFirestore(imageUrl);
-              },
-              child: Text('Upload Image and Save Data'),
-            ),
-          ],
+              SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () async {
+                  String? imageUrl = await uploadImageToFirebase();
+                  saveDataToFirestore(imageUrl);
+                },
+                child: Text('Upload Image and Save Data'),
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -1,159 +1,88 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class game1_delete extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Game delete',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: QuizScreen(),
-    );
-  }
-}
-class QuizScreen extends StatelessWidget {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-
-  @override
-  Widget build(BuildContext context) {
-    return Navigator(
-      onGenerateRoute: (settings) {
-        return MaterialPageRoute(
-          builder: (context) => Scaffold(
-            appBar: AppBar(
-              title: Text('Game'),
-              leading: IconButton(
-                icon: Icon(Icons.arrow_back),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ),
-            body: StreamBuilder<QuerySnapshot>(
-              stream: _firestore.collection('game2').snapshots(),
-              builder: (context, snapshot) {
-                if (!snapshot.hasData) {
-                  return Center(
-                    child: CircularProgressIndicator(),
-                  );
-                }
-                List<QueryDocumentSnapshot> questions = snapshot.data!.docs;
-                return ListView.builder(
-                  itemCount: questions.length,
-                  itemBuilder: (context, index) {
-                    Map<String, dynamic> questionData =
-                        questions[index].data() as Map<String, dynamic>;
-                    return Card(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Image.network(
-                            questionData['imageUrl'],
-                            width: double.infinity,
-                            height: 200,
-                            fit: BoxFit.cover,
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  questionData['question'],
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                SizedBox(height: 8),
-                                ...List.generate(
-                                  questionData['options'].length,
-                                  (optionIndex) => Text(
-                                    questionData['options'][optionIndex],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Align(
-                            alignment: Alignment.centerRight,
-                            child: IconButton(
-                              icon: Icon(Icons.delete),
-                              onPressed: () async {
-                                await _firestore
-                                    .collection('game2')
-                                    .doc(questions[index].id)
-                                    .delete();
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                );
-              },
-            ),
-          ),
-        );
-      },
-    );
-  }
-}
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-
+class ViewAndDeleteDataPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Game'),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.of(context).pop();
+        title: Text('View and Delete Data'),
+      ),
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage(
+              'assets/PMSbackground.png', // Replace 'assets/PMSbackground.png' with your image path
+            ),
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: StreamBuilder<QuerySnapshot>(
+          stream: FirebaseFirestore.instance.collection('game').snapshots(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+            if (snapshot.hasError) {
+              return Center(
+                child: Text('Error: ${snapshot.error}'),
+              );
+            }
+            if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+              return Center(
+                child: Text('No data available.'),
+              );
+            }
+            return ListView.builder(
+              itemCount: snapshot.data!.docs.length,
+              itemBuilder: (context, index) {
+                DocumentSnapshot document = snapshot.data!.docs[index];
+                return ListTile(
+                  title: Image.network(document['imageUrl']),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Option 1: ${document['options'][0]}'),
+                      Text('Option 2: ${document['options'][1]}'),
+                      Text('Option 3: ${document['options'][2]}'),
+                      Text('Option 4: ${document['options'][3]}'),
+                      Text('Correct Option: ${document['correctOption']}'),
+                    ],
+                  ),
+                  trailing: IconButton(
+                    icon: Icon(Icons.delete),
+                    onPressed: () {
+                      _deleteDocument(context, document.id);
+                    },
+                  ),
+                );
+              },
+            );
           },
         ),
       ),
-      body: StreamBuilder<QuerySnapshot>(
-        stream: _firestore.collection('game2').snapshots(),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-          List<QueryDocumentSnapshot> questions = snapshot.data!.docs;
-          return ListView.builder(
-            itemCount: questions.length,
-            itemBuilder: (context, index) {
-              Map<String, dynamic> questionData =
-                  questions[index].data() as Map<String, dynamic>;
-              return ListTile(
-                title: Text(questionData['question']),
-                subtitle: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: List.generate(
-                    questionData['imageUrl'].length,
-                    (optionIndex) => Text(
-                      questionData['imageUrl'][optionIndex],
-                    ),
-                  ),
-                ),
-                trailing: IconButton(
-                  icon: Icon(Icons.delete),
-                  onPressed: () async {
-                    await _firestore
-                        .collection('game2')
-                        .doc(questions[index].id)
-                        .delete();
-                  },
-                ),
-              );
-            },
-          );
-        },
-      ),
     );
   }
+
+  Future<void> _deleteDocument(BuildContext context, String documentId) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('game')
+          .doc(documentId)
+          .delete();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Document deleted successfully!'),
+        ),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to delete document. Please try again.'),
+        ),
+      );
+    }
+  }
+}

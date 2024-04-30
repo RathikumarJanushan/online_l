@@ -91,76 +91,85 @@ class _ImageUploadScreen2State extends State<ImageUploadScreen2> {
       appBar: AppBar(
         title: Text('Upload Image and Question'),
       ),
-      body: _isLoading
-          ? Center(child: CircularProgressIndicator())
-          : SingleChildScrollView(
-              child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    _imageFile == null
-                        ? Text('No image selected.')
-                        : Image.file(_imageFile!),
-                    ElevatedButton(
-                      onPressed: _pickImageFromGallery,
-                      child: Text('Select Image'),
-                    ),
-                    TextField(
-                      onChanged: (value) {
-                        _question = value;
-                      },
-                      decoration: InputDecoration(
-                        hintText: 'Enter your question',
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage(
+                'assets/PMSbackground.png'), // Replace 'assets/background_image.jpg' with your image path
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: _isLoading
+            ? Center(child: CircularProgressIndicator())
+            : SingleChildScrollView(
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      _imageFile == null
+                          ? Text('No image selected.')
+                          : Image.file(_imageFile!),
+                      ElevatedButton(
+                        onPressed: _pickImageFromGallery,
+                        child: Text('Select Image'),
                       ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Text('True'),
-                        Radio(
-                          value: true,
-                          groupValue: _selection,
-                          onChanged: (value) {
-                            setState(() {
-                              _selection = value as bool?;
-                            });
-                          },
+                      TextField(
+                        onChanged: (value) {
+                          _question = value;
+                        },
+                        decoration: InputDecoration(
+                          hintText: 'Enter your question',
                         ),
-                        Text('False'),
-                        Radio(
-                          value: false,
-                          groupValue: _selection,
-                          onChanged: (value) {
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text('True'),
+                          Radio(
+                            value: true,
+                            groupValue: _selection,
+                            onChanged: (value) {
+                              setState(() {
+                                _selection = value as bool?;
+                              });
+                            },
+                          ),
+                          Text('False'),
+                          Radio(
+                            value: false,
+                            groupValue: _selection,
+                            onChanged: (value) {
+                              setState(() {
+                                _selection = value as bool?;
+                              });
+                            },
+                          ),
+                        ],
+                      ),
+                      ElevatedButton(
+                        onPressed: () async {
+                          if (_imageFile != null &&
+                              _question.isNotEmpty &&
+                              _selection != null) {
+                            await _uploadImageToStorage();
+                            await _addDataToFirestore();
                             setState(() {
-                              _selection = value as bool?;
+                              _imageFile = null;
+                              _question = '';
+                              _selection = null;
                             });
-                          },
-                        ),
-                      ],
-                    ),
-                    ElevatedButton(
-                      onPressed: () async {
-                        if (_imageFile != null &&
-                            _question.isNotEmpty &&
-                            _selection != null) {
-                          await _uploadImageToStorage();
-                          await _addDataToFirestore();
-                          setState(() {
-                            _imageFile = null;
-                            _question = '';
-                            _selection = null;
-                          });
-                        } else {
-                          _showErrorSnackbar(
-                              'Please select an image, enter a question, and choose an option.');
-                        }
-                      },
-                      child: Text('Upload Data'),
-                    ),
-                  ],
+                          } else {
+                            _showErrorSnackbar(
+                                'Please select an image, enter a question, and choose an option.');
+                          }
+                        },
+                        child: Text('Upload Data'),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
+      ),
     );
   }
 }

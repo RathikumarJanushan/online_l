@@ -22,62 +22,93 @@ class LearningMaterialPage extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              ElevatedButton(
-                onPressed: () {
-                  // Navigate to Training Video page
+              GestureDetector(
+                onTap: () {
+                  // Navigate to Report
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => VideoPage()),
                   );
                 },
-                child: Text('Training Video'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Color.fromARGB(255, 1, 235, 235),
-                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
+                child: buildLearningMaterialItem(
+                  'assets/Learning.jpg',
+                  'Training Video',
+                  context,
                 ),
               ),
-              SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
-                  // Navigate to Game Hub page
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => g_add_del()),
-                  );
-                },
-                child: Text('Game Hub'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.greenAccent,
-                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                ),
-              ),
-              SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
-                  // Navigate to Assessment page
+              GestureDetector(
+                onTap: () {
+                  // Navigate to Assessment
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => add_del()),
                   );
                 },
-                child: Text('Assessment'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Color.fromARGB(255, 2, 250, 212),
-                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
+                child: buildLearningMaterialItem(
+                  'assets/assessment.avif',
+                  'Assessment',
+                  context,
+                ),
+              ),
+              GestureDetector(
+                onTap: () {
+                  // Navigate to Report
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => g_add_del()),
+                  );
+                },
+                child: buildLearningMaterialItem(
+                  'assets/game.jpg',
+                  'Game Hub',
+                  context,
                 ),
               ),
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget buildLearningMaterialItem(
+      String imagePath, String title, BuildContext context) {
+    return Container(
+      width: 200,
+      height: 200,
+      margin: EdgeInsets.symmetric(vertical: 10),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.5),
+            spreadRadius: 5,
+            blurRadius: 7,
+            offset: Offset(0, 3),
+          ),
+        ],
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(20),
+            child: Image.asset(
+              imagePath,
+              fit: BoxFit.cover,
+              width: 200,
+              height: 100,
+            ),
+          ),
+          SizedBox(height: 10),
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
       ),
     );
   }

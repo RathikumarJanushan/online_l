@@ -10,79 +10,180 @@ class Assessment extends StatelessWidget {
       appBar: AppBar(
         title: Text('Assessments'),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ElevatedButton(
-              onPressed: () {
-                // Navigate to Training Video page
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => AddQuestionScreen1()),
-                );
-              },
-              child: Text('Assessment1'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Color.fromARGB(255, 1, 235, 235),
-                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
-                ),
-              ),
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                // Navigate to Game Hub page
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => AddQuestionScreen2()),
-                );
-              },
-              child: Text('Assessment2'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.greenAccent,
-                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
-                ),
-              ),
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                // Navigate to Assessment page
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => AddQuestionScreen3()),
-                );
-              },
-              child: Text('Assessment3'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Color.fromARGB(255, 2, 250, 212),
-                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
-                ),
-              ),
-            ),
-          ],
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage(
+                'assets/PMSbackground.png'), // Replace 'assets/background_image.jpg' with your image path
+            fit: BoxFit.cover,
+          ),
         ),
-      ),
-    );
-  }
-}
-
-class TrainingVideoPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Training Video'),
-      ),
-      body: Center(
-        child: Text('This is the Training Video page'),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              GestureDetector(
+                onTap: () {
+                  // Navigate to Game Hub page
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => AddQuestionScreen1()),
+                  );
+                },
+                child: Container(
+                  width: 200, // Adjust width as needed
+                  height:
+                      150, // Adjust height as needed to accommodate both image and text
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(
+                        20), // Add border radius for rounded corners
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.5), // Add shadow color
+                        spreadRadius: 5, // Add spread radius
+                        blurRadius: 7, // Add blur radius
+                        offset: Offset(0, 3), // Add offset
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(
+                            20), // Match the container's border radius
+                        child: Image.asset(
+                          'assets/assessment1.jpg', // Path to your game hub icon asset
+                          fit: BoxFit
+                              .cover, // Ensure the image covers the entire container
+                          width: 200, // Adjust width as needed
+                          height: 100, // Adjust height as needed
+                        ),
+                      ),
+                      SizedBox(
+                          height: 10), // Add spacing between image and text
+                      Text(
+                        'Assessments1', // Your text
+                        style: TextStyle(
+                          fontSize: 20, // Adjust font size as needed
+                          fontWeight:
+                              FontWeight.bold, // Add font weight if needed
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              GestureDetector(
+                onTap: () {
+                  // Navigate to Game Hub page
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => AddQuestionScreen2()),
+                  );
+                },
+                child: Container(
+                  width: 200, // Adjust width as needed
+                  height:
+                      150, // Adjust height as needed to accommodate both image and text
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(
+                        20), // Add border radius for rounded corners
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.5), // Add shadow color
+                        spreadRadius: 5, // Add spread radius
+                        blurRadius: 7, // Add blur radius
+                        offset: Offset(0, 3), // Add offset
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(
+                            20), // Match the container's border radius
+                        child: Image.asset(
+                          'assets/assessment1.jpg', // Path to your game hub icon asset
+                          fit: BoxFit
+                              .cover, // Ensure the image covers the entire container
+                          width: 200, // Adjust width as needed
+                          height: 100, // Adjust height as needed
+                        ),
+                      ),
+                      SizedBox(
+                          height: 10), // Add spacing between image and text
+                      Text(
+                        'Assessments2', // Your text
+                        style: TextStyle(
+                          fontSize: 20, // Adjust font size as needed
+                          fontWeight:
+                              FontWeight.bold, // Add font weight if needed
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              GestureDetector(
+                onTap: () {
+                  // Navigate to Game Hub page
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => AddQuestionScreen3()),
+                  );
+                },
+                child: Container(
+                  width: 200, // Adjust width as needed
+                  height:
+                      150, // Adjust height as needed to accommodate both image and text
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(
+                        20), // Add border radius for rounded corners
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.5), // Add shadow color
+                        spreadRadius: 5, // Add spread radius
+                        blurRadius: 7, // Add blur radius
+                        offset: Offset(0, 3), // Add offset
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(
+                            20), // Match the container's border radius
+                        child: Image.asset(
+                          'assets/assessment1.jpg', // Path to your game hub icon asset
+                          fit: BoxFit
+                              .cover, // Ensure the image covers the entire container
+                          width: 200, // Adjust width as needed
+                          height: 100, // Adjust height as needed
+                        ),
+                      ),
+                      SizedBox(
+                          height: 10), // Add spacing between image and text
+                      Text(
+                        'Assessments3', // Your text
+                        style: TextStyle(
+                          fontSize: 20, // Adjust font size as needed
+                          fontWeight:
+                              FontWeight.bold, // Add font weight if needed
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

@@ -50,42 +50,51 @@ class _AddQuestionScreen2State extends State<AddQuestionScreen2> {
       appBar: AppBar(
         title: Text('Add Question'),
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              TextField(
-                controller: _questionController,
-                decoration: InputDecoration(labelText: 'Question'),
-              ),
-              TextField(
-                controller: _option1Controller,
-                decoration: InputDecoration(labelText: 'Option 1'),
-              ),
-              TextField(
-                controller: _option2Controller,
-                decoration: InputDecoration(labelText: 'Option 2'),
-              ),
-              TextField(
-                controller: _option3Controller,
-                decoration: InputDecoration(labelText: 'Option 3'),
-              ),
-              TextField(
-                controller: _option4Controller,
-                decoration: InputDecoration(labelText: 'Option 4'),
-              ),
-              TextField(
-                controller: _correctOptionController,
-                decoration: InputDecoration(labelText: 'Correct Option'),
-              ),
-              SizedBox(height: 16.0),
-              ElevatedButton(
-                onPressed: _submitQuestion,
-                child: Text('Submit'),
-              ),
-            ],
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage(
+                'assets/PMSbackground.png'), // Replace 'assets/background_image.jpg' with your image path
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                TextField(
+                  controller: _questionController,
+                  decoration: InputDecoration(labelText: 'Question'),
+                ),
+                TextField(
+                  controller: _option1Controller,
+                  decoration: InputDecoration(labelText: 'Option 1'),
+                ),
+                TextField(
+                  controller: _option2Controller,
+                  decoration: InputDecoration(labelText: 'Option 2'),
+                ),
+                TextField(
+                  controller: _option3Controller,
+                  decoration: InputDecoration(labelText: 'Option 3'),
+                ),
+                TextField(
+                  controller: _option4Controller,
+                  decoration: InputDecoration(labelText: 'Option 4'),
+                ),
+                TextField(
+                  controller: _correctOptionController,
+                  decoration: InputDecoration(labelText: 'Correct Option'),
+                ),
+                SizedBox(height: 16.0),
+                ElevatedButton(
+                  onPressed: _submitQuestion,
+                  child: Text('Submit'),
+                ),
+              ],
+            ),
           ),
         ),
       ),
